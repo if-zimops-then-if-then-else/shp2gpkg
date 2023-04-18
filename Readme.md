@@ -25,7 +25,7 @@ shp2gpkMerge
 ````
 
 Benutzung:
-
+````
 1. Gewünschte Dateien im Ordner "data" platzieren:
   1.1. .PAR Datei
   1.2. .SOG Datei
@@ -36,6 +36,6 @@ Benutzung:
   1.7. .shx Datei
 2. Application.bat ausführen
 3. Dateien im Ordner "data" austauschen
-
+````
 Hinweis: Es kann immer nur ein Geopackage gleichzeitig erstellt werden! Es können zwar mehrere Geopackages im Hauptordner liegen,
 allerdings dürfen im "data"-Ordner nicht mehr als 1 Datei von jedem Typ liegen!
