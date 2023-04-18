@@ -27,13 +27,13 @@ shp2gpkMerge
 Benutzung:
 
 1. Gewünschte Dateien im Ordner "data" platzieren:
-   2. .PAR Datei
-   3. .SOG Datei
-   4. .TTC Datei
-   5. .dbf Datei
-   6. .prj Datei
-   7. .shp Datei
-   8. .shx Datei
+  1.1. .PAR Datei
+  1.2. .SOG Datei
+  1.3. .TTC Datei
+  1.4. .dbf Datei
+  1.5. .prj Datei
+  1.6. .shp Datei
+  1.7. .shx Datei
 2. Application.bat ausführen
 3. Dateien im Ordner "data" austauschen
 
