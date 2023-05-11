@@ -25,9 +25,9 @@ import geopandas as gpd
 
 
 def convert_to_csv(file, name):
-    with open('data/' + file, 'r') as infile:
+    with open('data/' + file, 'r', encoding='UTF-8') as infile:
         # Open the CSV file for writing
-        with open('data/' + name + '_1.csv', 'w', newline='') as outfile:
+        with open('data/' + name + '_1.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -39,10 +39,10 @@ def convert_to_csv(file, name):
 
 
 def shorten_sog(file):
-    with open('data/' + file) as infile:
+    with open('data/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'SOG_2.csv', 'w', newline='') as outfile:
+        with open('data/' + 'SOG_2.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -55,10 +55,10 @@ def shorten_sog(file):
 
 
 def shorten_par(file):
-    with open('data/' + file) as infile:
+    with open('data/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'PAR_2.csv', 'w', newline='') as outfile:
+        with open('data/' + 'PAR_2.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -68,10 +68,10 @@ def shorten_par(file):
 
 
 def shorten_ttc(file):
-    with open('data/' + file) as infile:
+    with open('data/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'TTC_2.csv', 'w', newline='') as outfile:
+        with open('data/' + 'TTC_2.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -81,10 +81,10 @@ def shorten_ttc(file):
 
 
 def rem_duplicate_par(file):
-    with open('data/' + file) as infile:
+    with open('data/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'PAR_3.csv', 'w', newline='') as outfile:
+        with open('data/' + 'PAR_3.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -96,10 +96,10 @@ def rem_duplicate_par(file):
 
 
 def rem_duplicate_ttc(file):
-    with open('data/' + file) as infile:
+    with open('data/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'TTC_3.csv', 'w', newline='') as outfile:
+        with open('data/' + 'TTC_3.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -119,10 +119,10 @@ def rem_duplicate_ttc(file):
 
 
 def parse_tipo(file):
-    with open('data/' + file) as infile:
+    with open('data/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'SOG_3.csv', 'w', newline='') as outfile:
+        with open('data/' + 'SOG_3.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -143,6 +143,10 @@ def parse_tipo(file):
                             3].lower() or 'consorzio' in r[2].lower():
                         r[1] = 'SOC. PUBBLICA'
                         writer.writerow(r)
+                    elif 'bezirksgemeinschaft' in r[2].lower() or 'bezirksgemeinschaft' in r[3].lower() or \
+                            'comunità comprensoriale' in r[3].lower() or 'comunità comprensoriale' in r[2].lower():
+                        r[1] = 'SOC. PUBBLICA'
+                        writer.writerow(r)
                     elif 'genossenschaft' in r[2].lower() or 'genossenschaft' in r[
                             3].lower() or 'società cooperativa' in r[3].lower() or 'società cooperativa' \
                             in r[2].lower():
@@ -150,9 +154,9 @@ def parse_tipo(file):
                         writer.writerow(r)
                     elif 'öffentliches gut' in r[2].lower() or 'öffentliches gut' in r[
                             3].lower() or 'demanio pubblico' in r[3].lower() or 'demanio pubblico' in r[2].lower():
-                        if 'acque' in r[2].lower() or 'aqcue' in r[3].lower() or 'gewässer' in r[3].lower() \
+                        if 'acque' in r[2].lower() or 'acque' in r[3].lower() or 'gewässer' in r[3].lower() \
                                 or 'gewässer' in r[2].lower():
-                            r[1] = 'PAB AQCUE'
+                            r[1] = 'PAB ACQUE'
                             writer.writerow(r)
                         elif 'ferrovie' in r[2].lower() or 'ferrovie' in r[3].lower() or 'eisenbahn' in r[
                                 3].lower() or 'eisenbahn' in r[2].lower():
@@ -186,10 +190,10 @@ def parse_tipo(file):
                         else:
                             r[1] = 'PAB'
                             writer.writerow(r)
-                    elif 'acque' in r[2].lower() or 'aqcue' in r[3].lower() or 'gewässer' in r[
+                    elif 'acque' in r[2].lower() or 'acqcue' in r[3].lower() or 'gewässer' in r[
                         3].lower() or 'gewässer' in \
                             r[2].lower():
-                        r[1] = 'PAB AQCUE'
+                        r[1] = 'PAB ACQUE'
                         writer.writerow(r)
                     elif 'ferrovie' in r[2].lower() or 'ferrovie' in r[3].lower() or 'eisenbahn' in r[
                             3].lower() or 'eisenbahn' in r[2].lower():
@@ -236,40 +240,42 @@ def merge_files():
     header2 = ['sog_id', 'TIPO', 'surname', 'name', 'id-code']
     header3 = ['sog_id', 'par_id']
 
-    par = pd.read_csv('data/PAR_3.csv', header=None)
+    par = pd.read_csv('data/PAR_3.csv', header=None, encoding='UTF-8')
     par.columns = header1
-    sog = pd.read_csv('data/SOG_3.csv', header=None)
+    sog = pd.read_csv('data/SOG_3.csv', header=None, encoding='UTF-8')
     sog.columns = header2
-    ttc = pd.read_csv('data/TTC_3.csv', header=None)
+    ttc = pd.read_csv('data/TTC_3.csv', header=None, encoding='UTF-8')
     ttc.columns = header3
 
     sog_ttc = pd.merge(sog, ttc, on='sog_id')
 
-    par_ttc = pd.merge(par, ttc, on='par_id')
+    par_ttc = pd.merge(par, ttc, on='par_id', how='outer')
 
-    merged = pd.merge(par_ttc, sog_ttc, on=['par_id', 'sog_id'])
+    merged = pd.merge(par_ttc, sog_ttc, on=['par_id', 'sog_id'], how='outer')
     merged = merged.drop('par_id', axis=1)
     merged = merged.drop('sog_id', axis=1)
-    merged.to_csv('data/merged_files.csv', index=False)
+
+    merged.to_csv('data/merged_files.csv', index=False, encoding='UTF-8')
 
 
 def parse_fields(row):
     # parse the coded ID into the PT_CODE
-    if row['dot'] == 'E':
-        if math.isnan(row['after']):
-            return '.' + str(int(row['pre']))
+    if not math.isnan(row['pre']):
+        if row['dot'] == 'E':
+            if math.isnan(row['after']):
+                return '.' + str(int(row['pre']))
+            else:
+                return '.' + str(int(row['pre'])) + '/' + str(int(row['after']))
         else:
-            return '.' + str(int(row['pre'])) + '/' + str(int(row['after']))
-    else:
-        if math.isnan(row['after']):
-            return str(int(row['pre']))
-        else:
-            return str(int(row['pre'])) + '/' + str(int(row['after']))
+            if math.isnan(row['after']):
+                return str(int(row['pre']))
+            else:
+                return str(int(row['pre'])) + '/' + str(int(row['after']))
 
 
 def parse_id(file):
     # parse the coded ID into the PT_CODE
-    df = pd.read_csv('data/' + file)
+    df = pd.read_csv('data/' + file, encoding='UTF-8')
     df['Concatenated'] = df.apply(parse_fields, axis=1)
     # then drop the 3 now unused columns
     df = df.drop('pre', axis=1)
@@ -281,12 +287,28 @@ def parse_id(file):
     # sort the new csv file by PT_CODE ascending
     df.sort_values('PT_CODE', axis=0, ascending=True, inplace=True, na_position='first')
     # then write it back as a new csv file
-    df.to_csv('data/parsed_ids.csv', index=False)
+    df.to_csv('data/parsed_ids.csv', index=False, encoding='UTF-8')
+
+
+def fill_blanks(file):
+    with open('data/' + file, encoding='UTF-8') as infile:
+        reader = csv.reader(infile)
+        # Open the CSV file for writing
+        with open('data/' + 'filled.csv', 'w', newline='', encoding='UTF-8') as outfile:
+            # Create a CSV writer object
+            writer = csv.writer(outfile)
+            # Read the file line by line
+            for r in reader:
+                # Write the fields to the CSV file
+                if (r[0] == '' or r[0] is None) and (r[1] == '' or r[1] is None) and (r[2] == '' or r[2] is None):
+                    writer.writerow(('no data', 'no data', 'no data', r[3], r[4]))
+                else:
+                    writer.writerow(r)
 
 
 def concat_fields(file):
     # Read the CSV file into a Pandas DataFrame
-    df = pd.read_csv('data/' + file)
+    df = pd.read_csv('data/' + file, encoding='UTF-8')
     # Concatenate three fields into one string using the apply function
     df['joined'] = df.apply(
         lambda row: ', '.join(
@@ -295,7 +317,7 @@ def concat_fields(file):
     df = df.drop('name', axis=1)
     df = df.drop('id-code', axis=1)
     # Write the modified DataFrame to a new CSV file
-    df.to_csv('data/concat.csv', index=False)
+    df.to_csv('data/concat.csv', index=False, encoding='UTF-8')
 
 
 def custom_agg(df):
@@ -310,18 +332,18 @@ def custom_agg(df):
 
 
 def join_ids(file):
-    df = pd.read_csv('data/' + file)
+    df = pd.read_csv('data/' + file, encoding='UTF-8')
     # Group the rows by ID and concatenate the strings
     grouped_df = df.groupby('PT_CODE').apply(custom_agg).reset_index()
     # Write the modified DataFrame to a new CSV file
     header = ['PT_CODE', 'NUM_PROP', 'PROP', 'TIPO']
     grouped_df.columns = header
-    grouped_df.to_csv('data/' + 'final.csv', index=False)
+    grouped_df.to_csv('data/' + 'final.csv', index=False, encoding='UTF-8')
 
 
 def merge_shapefile(file, num):
     shapefile = gpd.read_file('data/' + file)
-    csvfile = pd.read_csv('data/final.csv')
+    csvfile = pd.read_csv('data/final.csv', encoding='UTF-8')
 
     shapefile.to_file('data/geopackage.gpkg', layer='layer_name', driver='GPKG', index=False)
 
@@ -384,9 +406,12 @@ def main():
     # parse the coded ID into PT_CODE
     parse_id('merged_files.csv')
     os.remove('data/merged_files.csv')
-    # concatenate the surname, name and id-code for each owner
-    concat_fields('parsed_ids.csv')
+    # fill any emtpy pars/sogs
+    fill_blanks('parsed_ids.csv')
     os.remove('data/parsed_ids.csv')
+    # concatenate the surname, name and id-code for each owner
+    concat_fields('filled.csv')
+    os.remove('data/filled.csv')
     # join multiple owners of one parcel together
     join_ids('concat.csv')
     os.remove('data/concat.csv')
