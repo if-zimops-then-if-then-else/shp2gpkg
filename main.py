@@ -339,6 +339,7 @@ def join_ids(file):
     header = ['PT_CODE', 'NUM_PROP', 'PROP', 'TIPO']
     grouped_df.columns = header
     grouped_df.to_csv('data/' + 'final.csv', index=False, encoding='UTF-8')
+    # grouped_df.to_csv('final.csv', index=False, encoding='UTF-8')
 
 
 def merge_shapefile(file, num):
