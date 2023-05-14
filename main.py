@@ -20,6 +20,7 @@ import math
 import os
 import time
 
+import numpy as np
 import pandas as pd
 import geopandas as gpd
 
@@ -302,6 +303,12 @@ def fill_blanks(file):
                 # Write the fields to the CSV file
                 if (r[0] == '' or r[0] is None) and (r[1] == '' or r[1] is None) and (r[2] == '' or r[2] is None):
                     writer.writerow(('no data', 'no data', 'no data', r[3], r[4]))
+                elif (r[1] == '' or r[1] is None) and (r[2] == '' or r[2] is None):
+                    writer.writerow((r[0], 'no data', 'no data', r[3], r[4]))
+                elif r[1] == '' or r[1] is None:
+                    writer.writerow((r[0], 'no data', r[1], r[3], r[4]))
+                elif r[2] == '' or r[2] is None:
+                    writer.writerow((r[0], r[1], 'no data', r[3], r[4]))
                 else:
                     writer.writerow(r)
 
