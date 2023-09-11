@@ -19,16 +19,40 @@ import csv
 import math
 import os
 import time
+from shutil import copy2
 
 import numpy as np
-import pandas as pd
 import geopandas as gpd
+import pandas as pd
+
+
+def get_all_files():
+    # create an empty list
+    list_todo = []
+    for f in os.listdir('data/'):
+        # add all files that are needed to the list
+        if f.endswith('.SOG') or f.endswith('.PAR') or f.endswith('.TTC') or f.endswith('.shp'):
+            list_todo.append(f)
+    return list_todo
+
+
+def get_next_files(list_todo):
+    # get the first file from the todo_list
+    next_file = list_todo[0]
+    # get the number of the file
+    num = next_file.split('_')[0]
+    # get all files that start with the same number
+    for f in list_todo:
+        if f.startswith(num):
+            copy2('data/' + f, 'workdir/')
+            list_todo.remove(f)
+    return list_todo, num
 
 
 def convert_to_csv(file, name):
-    with open('data/' + file, 'r', encoding='UTF-8') as infile:
+    with open('workdir/' + file, 'r', encoding='UTF-8') as infile:
         # Open the CSV file for writing
-        with open('data/' + name + '_1.csv', 'w', newline='', encoding='UTF-8') as outfile:
+        with open('workdir/' + name + '_1.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -40,10 +64,10 @@ def convert_to_csv(file, name):
 
 
 def shorten_sog(file):
-    with open('data/' + file, encoding='UTF-8') as infile:
+    with open('workdir/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'SOG_2.csv', 'w', newline='', encoding='UTF-8') as outfile:
+        with open('workdir/' + 'SOG_2.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -56,10 +80,10 @@ def shorten_sog(file):
 
 
 def shorten_par(file):
-    with open('data/' + file, encoding='UTF-8') as infile:
+    with open('workdir/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'PAR_2.csv', 'w', newline='', encoding='UTF-8') as outfile:
+        with open('workdir/' + 'PAR_2.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -69,10 +93,10 @@ def shorten_par(file):
 
 
 def shorten_ttc(file):
-    with open('data/' + file, encoding='UTF-8') as infile:
+    with open('workdir/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'TTC_2.csv', 'w', newline='', encoding='UTF-8') as outfile:
+        with open('workdir/' + 'TTC_2.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -82,10 +106,10 @@ def shorten_ttc(file):
 
 
 def rem_duplicate_par(file):
-    with open('data/' + file, encoding='UTF-8') as infile:
+    with open('workdir/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'PAR_3.csv', 'w', newline='', encoding='UTF-8') as outfile:
+        with open('workdir/' + 'PAR_3.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -97,10 +121,10 @@ def rem_duplicate_par(file):
 
 
 def rem_duplicate_ttc(file):
-    with open('data/' + file, encoding='UTF-8') as infile:
+    with open('workdir/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'TTC_3.csv', 'w', newline='', encoding='UTF-8') as outfile:
+        with open('workdir/' + 'TTC_3.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -120,10 +144,10 @@ def rem_duplicate_ttc(file):
 
 
 def parse_tipo(file):
-    with open('data/' + file, encoding='UTF-8') as infile:
+    with open('workdir/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'SOG_3.csv', 'w', newline='', encoding='UTF-8') as outfile:
+        with open('workdir/' + 'SOG_3.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -241,11 +265,11 @@ def merge_files():
     header2 = ['sog_id', 'TIPO', 'surname', 'name', 'id-code']
     header3 = ['sog_id', 'par_id']
 
-    par = pd.read_csv('data/PAR_3.csv', header=None, encoding='UTF-8')
+    par = pd.read_csv('workdir/PAR_3.csv', header=None, encoding='UTF-8')
     par.columns = header1
-    sog = pd.read_csv('data/SOG_3.csv', header=None, encoding='UTF-8')
+    sog = pd.read_csv('workdir/SOG_3.csv', header=None, encoding='UTF-8')
     sog.columns = header2
-    ttc = pd.read_csv('data/TTC_3.csv', header=None, encoding='UTF-8')
+    ttc = pd.read_csv('workdir/TTC_3.csv', header=None, encoding='UTF-8')
     ttc.columns = header3
 
     sog_ttc = pd.merge(sog, ttc, on='sog_id')
@@ -256,7 +280,7 @@ def merge_files():
     merged = merged.drop('par_id', axis=1)
     merged = merged.drop('sog_id', axis=1)
 
-    merged.to_csv('data/merged_files.csv', index=False, encoding='UTF-8')
+    merged.to_csv('workdir/merged_files.csv', index=False, encoding='UTF-8')
 
 
 def parse_fields(row):
@@ -276,7 +300,7 @@ def parse_fields(row):
 
 def parse_id(file):
     # parse the coded ID into the PT_CODE
-    df = pd.read_csv('data/' + file, encoding='UTF-8')
+    df = pd.read_csv('workdir/' + file, encoding='UTF-8')
     df['Concatenated'] = df.apply(parse_fields, axis=1)
     # then drop the 3 now unused columns
     df = df.drop('pre', axis=1)
@@ -288,14 +312,14 @@ def parse_id(file):
     # sort the new csv file by PT_CODE ascending
     df.sort_values('PT_CODE', axis=0, ascending=True, inplace=True, na_position='first')
     # then write it back as a new csv file
-    df.to_csv('data/parsed_ids.csv', index=False, encoding='UTF-8')
+    df.to_csv('workdir/parsed_ids.csv', index=False, encoding='UTF-8')
 
 
 def fill_blanks(file):
-    with open('data/' + file, encoding='UTF-8') as infile:
+    with open('workdir/' + file, encoding='UTF-8') as infile:
         reader = csv.reader(infile)
         # Open the CSV file for writing
-        with open('data/' + 'filled.csv', 'w', newline='', encoding='UTF-8') as outfile:
+        with open('workdir/' + 'filled.csv', 'w', newline='', encoding='UTF-8') as outfile:
             # Create a CSV writer object
             writer = csv.writer(outfile)
             # Read the file line by line
@@ -315,7 +339,7 @@ def fill_blanks(file):
 
 def concat_fields(file):
     # Read the CSV file into a Pandas DataFrame
-    df = pd.read_csv('data/' + file, encoding='UTF-8')
+    df = pd.read_csv('workdir/' + file, encoding='UTF-8')
     # Concatenate three fields into one string using the apply function
     df['joined'] = df.apply(
         lambda row: ', '.join(
@@ -324,7 +348,7 @@ def concat_fields(file):
     df = df.drop('name', axis=1)
     df = df.drop('id-code', axis=1)
     # Write the modified DataFrame to a new CSV file
-    df.to_csv('data/concat.csv', index=False, encoding='UTF-8')
+    df.to_csv('workdir/concat.csv', index=False, encoding='UTF-8')
 
 
 def custom_agg(df):
@@ -339,39 +363,137 @@ def custom_agg(df):
 
 
 def join_ids(file):
-    df = pd.read_csv('data/' + file, encoding='UTF-8')
+    df = pd.read_csv('workdir/' + file, encoding='UTF-8')
     # Group the rows by ID and concatenate the strings
     grouped_df = df.groupby('PT_CODE').apply(custom_agg).reset_index()
     # Write the modified DataFrame to a new CSV file
     header = ['PT_CODE', 'NUM_PROP', 'PROP', 'TIPO']
     grouped_df.columns = header
-    grouped_df.to_csv('data/' + 'final.csv', index=False, encoding='UTF-8')
+    grouped_df.to_csv('workdir/' + 'final.csv', index=False, encoding='UTF-8')
+    # uncomment line below for seeing the final merged csv file
     # grouped_df.to_csv('final.csv', index=False, encoding='UTF-8')
 
 
 def merge_shapefile(file, num):
-    shapefile = gpd.read_file('data/' + file)
-    csvfile = pd.read_csv('data/final.csv', encoding='UTF-8')
+    # open the shapefile and the final csv file
+    shapefile = gpd.read_file('workdir/' + file)
+    csvfile = pd.read_csv('workdir/final.csv', encoding='UTF-8')
+    # create a temporary GeoPackage file
+    shapefile.to_file('workdir/geopackage.gpkg', layer='layer_name', driver='GPKG', index=False)
 
-    shapefile.to_file('data/geopackage.gpkg', layer='layer_name', driver='GPKG', index=False)
-
-    gpkg = gpd.read_file('data/geopackage.gpkg', layer='layer_name')
-
+    # read and merge the GeoPackage file with the csv file
+    gpkg = gpd.read_file('workdir/geopackage.gpkg', layer='layer_name')
     joined = gpkg.merge(csvfile, on='PT_CODE')
-
     joined = joined.rename(columns={'joined': 'PROP'})
 
-    joined.to_file(num + '_geopackage.gpkg', driver='GPKG', index=False)
+    # save the final GeoPackage using the number as filename
+    joined.to_file('out/' + num + '_geopackage.gpkg', driver='GPKG', index=False)
 
-    os.remove('data/final.csv')
-    os.remove('data/geopackage.gpkg')
+    # remove files that are no longer needed
+    os.remove('workdir/final.csv')
+    os.remove('workdir/geopackage.gpkg')
 
 
-def main():
-    print("STARTING")
-    time.sleep(1)
+# function to combine multiple packages into a single one
+def combine_gpkg():
+    combined_gpkg = gpd.GeoDataFrame()
+    for f in os.listdir('out/'):
+        if f.endswith('.gpkg'):
+            file_path = 'out/' + f
+            gpk_data = gpd.read_file(file_path)
+            # append every file that is a GeoPackage to the empty one created above
+            combined_gpkg = combined_gpkg.append(gpk_data, ignore_index=True)
+
+    # save the final result as a combined GeoPackage
+    combined_gpkg.to_file('out/combined.gpkg', driver='GPKG', index=False)
+
+
+def main_loop(files):
+    while len(files):
+        print("PROCEEDING")
+        # check for the next files and move them to the working directory
+        par_file, sog_file, ttc_file, shp_file = None, None, None, None
+        files, num = get_next_files(files)
+
+        for f in os.listdir('workdir/'):
+            if f.endswith('.PAR'):
+                print(f)
+                par_file = f
+            elif f.endswith('.SOG'):
+                print(f)
+                sog_file = f
+            elif f.endswith('.TTC'):
+                print(f)
+                ttc_file = f
+            elif f.endswith('.shp'):
+                print(f)
+                shp_file = f
+
+        # raise Exception if any of the 4 files is missing
+        if any([par_file, sog_file, ttc_file, shp_file]) is None:
+            err_str = "File(s) missing for " + num + ": "
+            if par_file is None:
+                err_str += "\n .PAR"
+            if sog_file is None:
+                err_str += "\n .SOG"
+            if ttc_file is None:
+                err_str += "\n .TTC"
+            if shp_file is None:
+                err_str += "\n .shp"
+            raise Exception(err_str)
+
+        # convert PAR SOG and TTC to csv files
+        convert_to_csv(par_file, 'PAR')
+        convert_to_csv(sog_file, 'SOG')
+        convert_to_csv(ttc_file, 'TTC')
+        # cut out unused columns
+        shorten_par('PAR_1.csv')
+        os.remove('workdir/PAR_1.csv')
+        shorten_sog('SOG_1.csv')
+        os.remove('workdir/SOG_1.csv')
+        shorten_ttc('TTC_1.csv')
+        os.remove('workdir/TTC_1.csv')
+        # remove duplicate parcels and duplicate keys
+        rem_duplicate_par('PAR_2.csv')
+        os.remove('workdir/PAR_2.csv')
+        rem_duplicate_ttc('TTC_2.csv')
+        os.remove('workdir/TTC_2.csv')
+        # add the TIPO to the SOG file
+        parse_tipo('SOG_2.csv')
+        os.remove('workdir/SOG_2.csv')
+        # merge all three files together
+        merge_files()
+        os.remove('workdir/PAR_3.csv')
+        os.remove('workdir/SOG_3.csv')
+        os.remove('workdir/TTC_3.csv')
+        # parse the coded ID into PT_CODE
+        parse_id('merged_files.csv')
+        os.remove('workdir/merged_files.csv')
+        # fill any emtpy pars/sogs
+        fill_blanks('parsed_ids.csv')
+        os.remove('workdir/parsed_ids.csv')
+        # concatenate the surname, name and id-code for each owner
+        concat_fields('filled.csv')
+        os.remove('workdir/filled.csv')
+        # join multiple owners of one parcel together
+        join_ids('concat.csv')
+        os.remove('workdir/concat.csv')
+        # merge the final csv file into the given shapefile and transform that into a geopackage
+        merge_shapefile(shp_file, num)
+        print(num + "DONE")
+        time.sleep(3)
+    # combining all created GeoPackages into a single one if there are more than one
+    if len(os.listdir('out/')) > 1:
+        print("COMBINING")
+        combine_gpkg()
+
+
+def main_single(files):
+    # check for the next files and move them to the working directory
     par_file, sog_file, ttc_file, shp_file = None, None, None, None
-    for f in os.listdir('data/'):
+    files, num = get_next_files(files)
+
+    for f in os.listdir('workdir/'):
         if f.endswith('.PAR'):
             print(f)
             par_file = f
@@ -385,48 +507,70 @@ def main():
             print(f)
             shp_file = f
 
-    num = par_file.split('_')[0]
-    print(num)
+    # raise Exception if any of the 4 files is missing
+    if any([par_file, sog_file, ttc_file, shp_file]) is None:
+        err_str = "File(s) missing for " + num + ": "
+        if par_file is None:
+            err_str += "\n .PAR"
+        if sog_file is None:
+            err_str += "\n .SOG"
+        if ttc_file is None:
+            err_str += "\n .TTC"
+        if shp_file is None:
+            err_str += "\n .shp"
+        raise Exception(err_str)
+
     # convert PAR SOG and TTC to csv files
     convert_to_csv(par_file, 'PAR')
     convert_to_csv(sog_file, 'SOG')
     convert_to_csv(ttc_file, 'TTC')
     # cut out unused columns
     shorten_par('PAR_1.csv')
-    os.remove('data/PAR_1.csv')
+    os.remove('workdir/PAR_1.csv')
     shorten_sog('SOG_1.csv')
-    os.remove('data/SOG_1.csv')
+    os.remove('workdir/SOG_1.csv')
     shorten_ttc('TTC_1.csv')
-    os.remove('data/TTC_1.csv')
+    os.remove('workdir/TTC_1.csv')
     # remove duplicate parcels and duplicate keys
     rem_duplicate_par('PAR_2.csv')
-    os.remove('data/PAR_2.csv')
+    os.remove('workdir/PAR_2.csv')
     rem_duplicate_ttc('TTC_2.csv')
-    os.remove('data/TTC_2.csv')
+    os.remove('workdir/TTC_2.csv')
     # add the TIPO to the SOG file
     parse_tipo('SOG_2.csv')
-    os.remove('data/SOG_2.csv')
+    os.remove('workdir/SOG_2.csv')
     # merge all three files together
     merge_files()
-    os.remove('data/PAR_3.csv')
-    os.remove('data/SOG_3.csv')
-    os.remove('data/TTC_3.csv')
+    os.remove('workdir/PAR_3.csv')
+    os.remove('workdir/SOG_3.csv')
+    os.remove('workdir/TTC_3.csv')
     # parse the coded ID into PT_CODE
     parse_id('merged_files.csv')
-    os.remove('data/merged_files.csv')
+    os.remove('workdir/merged_files.csv')
     # fill any emtpy pars/sogs
     fill_blanks('parsed_ids.csv')
-    os.remove('data/parsed_ids.csv')
+    os.remove('workdir/parsed_ids.csv')
     # concatenate the surname, name and id-code for each owner
     concat_fields('filled.csv')
-    os.remove('data/filled.csv')
+    os.remove('workdir/filled.csv')
     # join multiple owners of one parcel together
     join_ids('concat.csv')
-    os.remove('data/concat.csv')
+    os.remove('workdir/concat.csv')
     # merge the final csv file into the given shapefile and transform that into a geopackage
     merge_shapefile(shp_file, num)
-    print("SUCCESS")
+    print(num + "DONE")
     time.sleep(3)
+
+def main():
+    print("STARTING")
+    time.sleep(1)
+    files = get_all_files()
+    if len(files) > 4:
+        main_loop(files)
+    else:
+        main_single(files)
+    # as long as there are more files to work with loop through the process
+    print("ALL DONE")
     exit(0)
 
 
