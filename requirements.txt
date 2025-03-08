@@ -1,0 +1,4 @@
+pandas~=2.0.0
+geopandas~=0.12.2
+py2exe~=0.13.0.0
+numpy~=1.0
